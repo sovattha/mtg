@@ -1,0 +1,55 @@
+{
+    "sets": [
+        {
+            "name": "Limited Edition Alpha",
+            "code": "LEA",
+            "gathererCode": "1E",
+            "releaseDate": "1993-08-05",
+            "border": "black",
+            "type": "core",
+            "booster": [
+                "rare",
+                "uncommon",
+                "uncommon",
+                "uncommon",
+                "common",
+                "common",
+                "common",
+                "common",
+                "common",
+                "common",
+                "common",
+                "common",
+                "common",
+                "common",
+                "common"
+            ],
+            "cards": [
+                {
+                    "layout": "normal",
+                    "type": "Creature — Elemental",
+                    "types": [
+                        "Creature"
+                    ],
+                    "colors": [
+                        "Blue"
+                    ],
+                    "multiverseid": 94,
+                    "name": "Air Elemental",
+                    "subtypes": [
+                        "Elemental"
+                    ],
+                    "cmc": 5,
+                    "rarity": "Uncommon",
+                    "artist": "Richard Thomas",
+                    "power": "4",
+                    "toughness": "4",
+                    "manaCost": "{3}{U}{U}",
+                    "text": "Flying",
+                    "flavor": "These spirits of the air are winsome and wild, and cannot be truly contained. Only marginally intelligent, they often substitute whimsy for strategy, delighting in mischief and mayhem.",
+                    "imageName": "air elemental"
+                }
+            ]
+        }
+    ]
+}
