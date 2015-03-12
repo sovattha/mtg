@@ -44,7 +44,7 @@
                         <label>Search for</label>
                     </div>
                     <div class="col-md-4">
-                        <input ng-model="term.cards.name" placeholder="Card name" />
+                        <input ng-model="term.cards.name" placeholder="Card name" id="searchCardName" />
                     </div>
                 </div>
                 <div class="row">
@@ -121,7 +121,8 @@
     <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     <script src="bower_components/angular/angular.min.js"></script>
     <script src="bower_components/angular-route/angular-route.min.js"></script>
-    <script src="bower_components/angular-toArrayFilter/toArrayFilter.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+    <script src="bower_components/ngStorage/src/angularLocalStorage.js"></script>
     <script src="js/app.js"></script>
     <script src="js/components/editor.js"></script>
     <script src="js/services/set-service.js"></script>
