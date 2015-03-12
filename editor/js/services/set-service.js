@@ -11,8 +11,7 @@ angular.module('Editor')
         function getSets(codes) {
             var dfr = $q.defer();
             if (cache.sets) {
-                var results = filterSetsByCode(cache.sets, codes);
-                dfr.resolve(results);
+                dfr.resolve(filterSetsByCode(cache.sets, codes));
             } else {
                 if (dev) {
                     $http.get('data/AllSets.json').success(function (data) {
@@ -31,35 +30,30 @@ angular.module('Editor')
         }
         
         function processResults(data, codes) {
-            var sets = convertToArray(data);
-            var results = filterSetsByCode(sets, codes);
-            cache.sets = results;
-            return results;
-        }
-        
-        function convertToArray(data) {
-            return _.toArray(data);
+            cache.sets = _.toArray(data);
+            cache.sets = filterSetsByCode(cache.sets, codes);
+            return cache.sets;
         }
         
         function filterSetsByCode(sets, codes) {
             return codes ? _.filter(sets, function(set) {
-                return codes.indexOf(set.code) >= 0;
+                return _.indexOf(codes, set.code) >= 0;
             }) : sets;
         }
 
         /**
-         * Return a list of cards corresponding to the given multiverse IDs in selectedCards.
+         * Return a list of cards corresponding to the given multiverse IDs in selectedCards, 
+         * among the given sets corresponding to the given setCodes.
          */
-        function getCards(selectedCards, setCode) {
+        function getCards(selectedCards, setCodes) {
             var filteredCards = [],
                 dfr = $q.defer();
-            getSets(setCode).then(function(filteredSets) {
-                filteredCards = _.flatten(filteredSets.map(function(s) {
+            getSets(setCodes).then(function(filteredSets) {
+                dfr.resolve(_.filter(_.flatten(filteredSets.map(function(s) {
                     return s.cards;
-                })).filter(function(c) {
+                })), function(c) {
                     return _.indexOf(selectedCards, c.multiverseid + '') >= 0;
-                });
-                dfr.resolve(filteredCards);
+                }));
             });
             return dfr.promise;
         }
@@ -67,37 +61,46 @@ angular.module('Editor')
         /**
          * Add the given selectedCards to the given deckList
          */
-        function addToDeck(deckList, selectedCards, setCode) {
-            getCards(selectedCards, setCode).then(function(filteredCards) {
-                filteredCards.forEach(function (card) {
-                    var qty = 0;
-                    var index = deckList.indexOf(card);
-                    if (index < 0) {
-                        deckList.push(card);
-                        card.quantity = ++qty;
+        function addToDeck(deckList, selectedCards, setCodes) {
+            getCards(selectedCards, setCodes).then(function(filteredCards) {
+                filteredCards.forEach(function(card) {
+                    var cardInDeck = _.where(deckList, {
+                        card: card
+                    });
+                    if (cardInDeck.length) {
+                        cardInDeck[0].quantity++;
                     } else {
-                        ++deckList[index].quantity;
+                        deckList.push({
+                            card: card,
+                            quantity: 1
+                        });
                     }
                 });
             });
         }
 
+        /**
+         * Remove the given selectedCards to the given deckList
+         */
         function removeFromDeck(deckList, selectedCards) {
             getCards(selectedCards).then(function(filteredCards) {
                 filteredCards.forEach(function(card) {
-                    var index = indexOfCardInDeck(deckList, card);
-                    --deckList[index].quantity;
-                    if (deckList[index].quantity == 0) {
-                        deckList.splice(indexOfCardInDeck(deckList, card), 1);
+                    var cardInDeck = _.where(deckList, {
+                        card: card
+                    });
+                    if (cardInDeck.length) {
+                        if (--cardInDeck[0].quantity === 0) {
+                            deckList.pop(cardInDeck[0]);
+                        }
                     }
                 });
             });
         }
         
         function indexOfCardInDeck(deckList, card) {
-            return deckList.map(function (o) {
+            return _.indexOf(deckList.map(function (o) {
                 return o.multiverseid;
-            }).indexOf(card.multiverseid);
+            }), card.multiverseid);
         }
 
         return {

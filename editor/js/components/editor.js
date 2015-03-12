@@ -11,15 +11,15 @@ angular.module('Editor')
             SetService.addToDeck($scope.mdCards, selectedCards, [setCode]);
         }
 
+        $scope.removeFromMd = function (selectedCards, setCode) {
+            SetService.removeFromDeck($scope.mdCards, selectedCards);
+        }
+        
         $scope.addToSb = function (selectedCards, setCode) {
             SetService.addToDeck($scope.sbCards, selectedCards, [setCode]);
         }
 
-        $scope.removeFromMd = function (selectedCards, setCode) {
-            SetService.removeFromDeck($scope.mdCards, selectedCards);
-        }
-
-        $scope.addToremoveFromSb = function (selectedCards, setCode) {
+        $scope.removeFromSb = function (selectedCards, setCode) {
             SetService.removeFromDeck($scope.sbCards, selectedCards);
         }
         

@@ -86,22 +86,28 @@
             </div>
             <div class="col-md-4">
                 <h2>Main deck</h2>
-                <div ng-repeat="card in mdCards | orderBy: 'name'" class="row">
+                <div ng-repeat="entry in mdCards | orderBy: 'entry.card.name'" class="row">
                     <div class="col-md-10">
-                        <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid={{card.multiverseid}}" target="mtg" ng-bind="card.name"></a>
+                        <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid={{entry.card.multiverseid}}" target="mtg" ng-bind="entry.card.name"></a>
                     </div>
                     <div class="col-md-2">
-                        <input ng-model="card.quantity" size="2" />
+                        <input ng-model="entry.quantity" size="2" />
                     </div>
                 </div>
+                <div ng-show="mdCards.length === 0">
+                    No card in the main deck
+                </div>
                 <h2>Sideboard</h2>
-                <div ng-repeat="card in sbCards | orderBy: 'name'" class="row">
+                <div ng-repeat="entry in sbCards | orderBy: 'entry.card.name'" class="row">
                     <div class="col-md-10">
-                        <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid={{card.multiverseid}}" target="mtg" ng-bind="card.name"></a>
+                        <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid={{entry.card.multiverseid}}" target="mtg" ng-bind="entry.card.name"></a>
                     </div>
                     <div class="col-md-2">
-                        <input ng-model="card.quantity" size="2" />
+                        <input ng-model="entry.quantity" size="2" />
                     </div>
+                </div>
+                <div ng-show="sbCards.length === 0">
+                    No card in the side board
                 </div>
             </div>
         </div>
