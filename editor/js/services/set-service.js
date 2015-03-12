@@ -18,7 +18,7 @@ angular.module('Editor')
                         dfr.resolve(processResults(data, codes));
                     });
                 } else {
-                    var myDataRef = new Firebase(FIREBASE_URL);
+                    var myDataRef = new Firebase(FIREBASE_URL + '/sets');
                     myDataRef.once('value', function (dataSnapshot) {
                         var data = dataSnapshot.val();
                         console.log('Ready', data);
@@ -26,6 +26,20 @@ angular.module('Editor')
                     });
                 }
             }
+            return dfr.promise;
+        }
+        
+        function getMdCards() {
+            var dfr = $q.defer();
+           
+            var myDataRef = new Firebase(FIREBASE_URL + '/mdCards');
+            myDataRef.on('value', function (dataSnapshot) {
+                var data = dataSnapshot.val();
+                console.log('Main deck', data);
+                data = data || [];
+                dfr.resolve(data);
+            });
+                
             return dfr.promise;
         }
         
@@ -76,6 +90,19 @@ angular.module('Editor')
                         });
                     }
                 });
+                var myDataRef = new Firebase(FIREBASE_URL + '/mdCards/');
+                var d = deckList.map(function (d) {
+                        return {
+                            card: {
+                                name: d.card.name,
+                                multiverseid: d.card.multiverseid
+                            },
+                            quantity: d.quantity
+                        };
+                    });
+                myDataRef.set(
+                    d
+                );
             });
         }
 
@@ -94,6 +121,8 @@ angular.module('Editor')
                         }
                     }
                 });
+                var myDataRef = new Firebase(FIREBASE_URL + '/mdCards/');
+                myDataRef.push(deckList);
             });
         }
         
@@ -105,6 +134,7 @@ angular.module('Editor')
 
         return {
             getSets: getSets,
+            getMdCards: getMdCards,
             getCards: getCards,
             addToDeck: addToDeck,
             removeFromDeck: removeFromDeck

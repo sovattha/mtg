@@ -6,6 +6,10 @@ angular.module('Editor')
             $scope.sets = data;
             setFocus('#searchCardName');
         });
+        
+        SetService.getMdCards().then(function (data) {
+            $scope.mdCards = data;
+        });
 
         $scope.addToMd = function (selectedCards, setCode) {
             SetService.addToDeck($scope.mdCards, selectedCards, [setCode]);

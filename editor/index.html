@@ -68,7 +68,8 @@
                 <div class="row" ng-repeat="set in sets | filter: term | orderBy: '-releaseDate' | limitTo: getMaxResults() as filteredSets" ng-show="term && set.cards.length">
                     <div class="row">
                         <h3 ng-bind="set.name + ' (' + set.code + ')'"></h3>
-                        <div>Matching cards: {{filteredCards.length == maxResults ? maxResults + ' or more' : filteredCards.length}}</div>
+                        <label>Matching cards: </label>
+                        <span ng-bind="filteredCards.length == maxResults ? maxResults + ' or more' : filteredCards.length"></span>
                     </div>
                     <div class="col-md-5">
                         <select multiple id="available-sets" ng-model="card" ng-dblclick="addToMd(card, set.code)" size="10">
