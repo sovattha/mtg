@@ -41,7 +41,7 @@
                 <h2>Available cards</h2>
                 <div class="row">
                     <div class="col-md-4">
-                        <label>Search for</label>
+                        <label for="searchCardName">Search for</label>
                     </div>
                     <div class="col-md-4">
                         <input ng-model="term.cards.name" placeholder="Card name" id="searchCardName" />
@@ -49,29 +49,37 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4">
-                        <label>Cards by set</label>
+                        <label for="maxResults">Results limit</label>
                     </div>
                     <div class="col-md-4">
-                        <input ng-model="limit" placeholder="Limit" />
+                        <input ng-model="maxResults" placeholder="Limit" id="maxResults" />
                     </div>
                 </div>
-                <div class="row" ng-repeat="set in sets | filter: term | orderBy: '-releaseDate' | limitTo: limit as filteredSets" ng-show="term && set.cards.length">
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="noLimit">No limit</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="checkbox" ng-model="noLimit" id="noLimit" />
+                    </div>
+                </div>
+                
+                
+                <div class="row" ng-repeat="set in sets | filter: term | orderBy: '-releaseDate' | limitTo: getMaxResults() as filteredSets" ng-show="term && set.cards.length">
                     <div class="row">
                         <h3 ng-bind="set.name + ' (' + set.code + ')'"></h3>
-                        <div>Matching cards: {{filteredCards.length == limit ? limit + ' or more' : filteredCards.length}}</div>
+                        <div>Matching cards: {{filteredCards.length == maxResults ? maxResults + ' or more' : filteredCards.length}}</div>
                     </div>
                     <div class="col-md-5">
                         <select multiple id="available-sets" ng-model="card" ng-dblclick="addToMd(card, set.code)" size="10">
-                            <option ng-repeat="card in set.cards | filter:term.cards | limitTo: limit as filteredCards" ng-value="card.multiverseid" ng-bind="card.name"></option>
+                            <option ng-repeat="card in set.cards | filter:term.cards | limitTo: getMaxResults() as filteredCards" ng-value="card.multiverseid" ng-bind="card.name"></option>
                         </select>
                     </div>
                     <div class="col-md-1">
-                        <a class="btn btn-default" href="#" role="button" ng-click="addToMd(card, set.code)">&raquo;</a>
-                        <a class="btn btn-default" href="#" role="button" ng-click="removeFromMd(card, set.code)">&laquo;</a>
-                    </div>
-                    <div class="col-md-1">
-                        <a class="btn btn-default" href="#" role="button" ng-click="addToSb(card, set.code)">&raquo;</a>
-                        <a class="btn btn-default" href="#" role="button" ng-click="removeFromSb(card, set.code)">&laquo;</a>
+                        <a class="btn btn-default" href="#" role="button" ng-click="addToMd(card, set.code)">MD &raquo;</a>
+                        <a class="btn btn-default" href="#" role="button" ng-click="removeFromMd(card, set.code)">&laquo; MD</a>
+                        <a class="btn btn-default" href="#" role="button" ng-click="addToSb(card, set.code)">SB &raquo;</a>
+                        <a class="btn btn-default" href="#" role="button" ng-click="removeFromSb(card, set.code)">&laquo; SB</a>
                     </div>
                     <div class="col-md-3"><img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card[0]}}&type=card" /></div>
                 </div>
@@ -94,7 +102,7 @@
     </div>
     <hr />
     <footer>
-        <p>&copy; soks.fr 2015</p>
+        <p>&copy; soks.fr 2015, version 0.0.2</p>
     </footer>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>

@@ -2,10 +2,6 @@ angular.module('Editor')
     .controller('EditorCtrl', ['$scope', 'SetService', '$timeout', function ($scope, SetService, $timeout) {
         'use strict';
 
-        $scope.mdCards = $scope.mdCards || [];
-        $scope.sbCards = $scope.sbCards || [];
-        $scope.limit = 20;
-
         SetService.getSets().then(function (data) {
             $scope.sets = data;
             setFocus('#searchCardName');
@@ -32,6 +28,14 @@ angular.module('Editor')
                 angular.element(fieldId).focus();
             }, 0);
         }
+        
+        $scope.getMaxResults = function() {
+            return $scope.noLimit ? 10000 : $scope.maxResults;
+        }
+        
+        $scope.mdCards = $scope.mdCards || [];
+        $scope.sbCards = $scope.sbCards || [];
+        $scope.maxResults = 20;
 
     }
 ]);
