@@ -1,5 +1,5 @@
 angular.module('Editor')
-    .service('SetService', ['$q', '$http', 'filterFilter', function ($q, $http, filterFilter) {
+    .service('SetService', ['$q', '$http', 'filterFilter', function ($q, $http, filterFilter, $firebaseObject) {
         'use strict';
         var cache = cache || {};
         var dev = true;
@@ -32,13 +32,13 @@ angular.module('Editor')
         function getMdCards() {
             var dfr = $q.defer();
            
-            var myDataRef = new Firebase(FIREBASE_URL + '/mdCards');
-            myDataRef.on('value', function (dataSnapshot) {
-                var data = dataSnapshot.val();
-                console.log('Main deck', data);
-                data = data || [];
-                dfr.resolve(data);
-            });
+            
+            
+//            myDataRef.on('value', function (dataSnapshot) {
+//                var data = dataSnapshot.val();
+//                console.log('Main deck', data);
+//                dfr.resolve(data);
+//            });
                 
             return dfr.promise;
         }

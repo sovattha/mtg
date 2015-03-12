@@ -1,5 +1,5 @@
 angular.module('Editor')
-    .controller('EditorCtrl', ['$scope', 'SetService', '$timeout', function ($scope, SetService, $timeout) {
+    .controller('EditorCtrl', ['$scope', 'SetService', '$timeout', function ($scope, SetService, $timeout, $firebaseObject) {
         'use strict';
 
         SetService.getSets().then(function (data) {
@@ -7,9 +7,15 @@ angular.module('Editor')
             setFocus('#searchCardName');
         });
         
-        SetService.getMdCards().then(function (data) {
-            $scope.mdCards = data;
-        });
+//        SetService.getMdCards().then(function (data) {
+              var ref = new Firebase(FIREBASE_URL + '/mdCards');
+              // download the data into a local object
+              var syncObject = $firebaseObject(ref);
+              // synchronize the object with a three-way data binding
+              // click on `index.html` above to see it used in the DOM!
+              syncObject.$bindTo($scope, "mdCards");
+            
+//        });
 
         $scope.addToMd = function (selectedCards, setCode) {
             SetService.addToDeck($scope.mdCards, selectedCards, [setCode]);
