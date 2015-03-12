@@ -38,17 +38,11 @@ angular.module('Editor')
         }
         
         function convertToArray(data) {
-            var sets = [], prop;
-            for (prop in data) {
-                if (data.hasOwnProperty(prop)) {
-                    sets.push(data[prop]);
-                }
-            }
-            return sets;
+            return _.toArray(data);
         }
         
         function filterSetsByCode(sets, codes) {
-            return codes ? sets.filter(function(set) {
+            return codes ? _.filter(sets, function(set) {
                 return codes.indexOf(set.code) >= 0;
             }) : sets;
         }
@@ -60,11 +54,10 @@ angular.module('Editor')
             var filteredCards = [],
                 dfr = $q.defer();
             getSets(setCode).then(function(filteredSets) {
-                filteredSets.forEach(function (set) {
-                    var results = filterFilter(set.cards, function (card) {
-                        return selectedCards.indexOf(card.multiverseid + '') >= 0;
-                    });
-                    filteredCards = filteredCards.concat(results);
+                filteredCards = _.flatten(filteredSets.map(function(s) {
+                    return s.cards;
+                })).filter(function(c) {
+                    return _.indexOf(selectedCards, c.multiverseid + '') >= 0;
                 });
                 dfr.resolve(filteredCards);
             });
@@ -77,8 +70,13 @@ angular.module('Editor')
         function addToDeck(deckList, selectedCards, setCode) {
             getCards(selectedCards, setCode).then(function(filteredCards) {
                 filteredCards.forEach(function (card) {
-                    if (deckList.indexOf(card) < 0) {
+                    var qty = 0;
+                    var index = deckList.indexOf(card);
+                    if (index < 0) {
                         deckList.push(card);
+                        card.quantity = ++qty;
+                    } else {
+                        ++deckList[index].quantity;
                     }
                 });
             });
@@ -87,17 +85,19 @@ angular.module('Editor')
         function removeFromDeck(deckList, selectedCards) {
             getCards(selectedCards).then(function(filteredCards) {
                 filteredCards.forEach(function(card) {
-                    deckList.splice(indexOfCardInDeck(deckList, card), 1);
+                    var index = indexOfCardInDeck(deckList, card);
+                    --deckList[index].quantity;
+                    if (deckList[index].quantity == 0) {
+                        deckList.splice(indexOfCardInDeck(deckList, card), 1);
+                    }
                 });
             });
         }
         
         function indexOfCardInDeck(deckList, card) {
-            for (var i = deckList.length - 1; i >= 0; i--) {
-                if (deckList[i].multiverseid === card.multiverseid) {
-                    return i;
-                }
-            }
+            return deckList.map(function (o) {
+                return o.multiverseid;
+            }).indexOf(card.multiverseid);
         }
 
         return {

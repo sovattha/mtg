@@ -1,5 +1,5 @@
 var FIREBASE_URL = 'https://mtge.firebaseio.com';
-angular.module('Editor', ['ngRoute', 'angularLocalStorage'])
+angular.module('Editor', ['ngRoute', 'angularLocalStorage', 'angular-underscore'])
     .config(function ($routeProvider) {
         'use strict';
         
