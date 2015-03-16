@@ -63,9 +63,16 @@
                         <input type="checkbox" ng-model="noLimit" id="noLimit" />
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="standardFormat">Standard sets only</label>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="checkbox" ng-model="standardFormat" id="standardFormat" />
+                    </div>
+                </div>
                 
-                
-                <div class="row" ng-repeat="set in sets | filter: term | orderBy: '-releaseDate' | limitTo: getMaxResults() as filteredSets" ng-show="term && set.cards.length">
+                <div class="row" ng-repeat="set in sets | filter: filterSets | orderBy: '-releaseDate' | limitTo: getMaxResults() as filteredSets" ng-show="filteredCards.length">
                     <div class="row">
                         <h3 ng-bind="set.name + ' (' + set.code + ')'"></h3>
                         <label>Matching cards: </label>

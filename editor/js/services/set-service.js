@@ -12,7 +12,7 @@ angular.module('Editor')
             if (cache.sets) {
                 dfr.resolve(filterSetsByCode(cache.sets, codes));
             } else {
-                $http.get('data/AllSets.json').success(function (data) {
+                $http.get('http://mtgjson.com/json/AllSets.json').success(function (data) {
                     dfr.resolve(processResults(data, codes));
                 });
             }

@@ -1,12 +1,14 @@
 angular.module('Editor')
-    .controller('EditorCtrl', ['$scope', 'SetService', '$timeout', '$firebaseArray', function ($scope, SetService, $timeout, $firebaseArray) {
+    .controller('EditorCtrl', ['$scope', 'SetService', '$timeout', '$firebaseArray', 'filterFilter', function ($scope, SetService, $timeout, $firebaseArray, filterFilter) {
         'use strict';
+        
+        $scope.standardSets = ['JOU', 'BNG', 'THS', 'M15', 'KTK', 'FRF', 'DTK'];
 
         SetService.getSets().then(function (data) {
             $scope.sets = data;
             setFocus('#searchCardName');
         });
-        
+            
         function syncScopeWithFirebase(objectName) {
             var ref = new Firebase(FIREBASE_URL + '/' + objectName);
             $scope[objectName] = $firebaseArray(ref);
@@ -44,6 +46,12 @@ angular.module('Editor')
         $scope.mdCards = $scope.mdCards || [];
         $scope.sbCards = $scope.sbCards || [];
         $scope.maxResults = 20;
+        $scope.noLimit = true;
+        $scope.standardFormat = true;
+        
+        $scope.filterSets = function(set) {
+            return $scope.standardFormat ? $scope.standardSets.indexOf(set.code) >= 0 : true;
+        }
 
     }
 ]);
