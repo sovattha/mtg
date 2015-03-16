@@ -18,6 +18,15 @@ angular.module('Editor')
         syncScopeWithFirebase('sbCards');
         
         $scope.addToMd = function (selectedCards, setCode) {
+            if (!selectedCards) {
+                var matchingSets = filterFilter($scope.sets, $scope.term);
+                var selectedSet = matchingSets[0];
+                var matchingCards = filterFilter(selectedSet.cards, $scope.term.cards);
+                if (matchingSets.length === 1 && matchingCards.length === 1) {
+                    var selectedCard = filterFilter(selectedSet.cards, $scope.term.cards)[0];
+                    SetService.addToDeck($scope.mdCards, [selectedCard.multiverseid + ''], [selectedSet.code]);
+                }
+            }
             SetService.addToDeck($scope.mdCards, selectedCards, [setCode]);
         }
 
@@ -62,4 +71,16 @@ angular.module('Editor')
         }
 
     }
-]);
+]).directive('ngEnter', function() {
+    return function(scope, element, attrs) {
+        element.bind("keydown keypress", function(event) {
+            if(event.which === 13) {
+                scope.$apply(function(){
+                    scope.$eval(attrs.ngEnter, {'event': event});
+                });
+
+                event.preventDefault();
+            }
+        });
+    };
+});

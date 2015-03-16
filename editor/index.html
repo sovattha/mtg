@@ -43,8 +43,8 @@
                     <div class="col-md-4">
                         <label for="searchCardName">Search for</label>
                     </div>
-                    <div class="col-md-4">
-                        <input class="form-control" ng-model="term.cards.name" placeholder="Card name" id="searchCardName" />
+                    <div class="col-md-3">
+                        <input class="form-control" ng-model="term.cards.name" placeholder="Card name" id="searchCardName" ng-enter="addToMd()" />
                     </div>
                 </div>
                 <div class="row" ng-hide="standardFormat">
@@ -73,7 +73,6 @@
                 </div>
                 
                 <div class="row" ng-repeat="set in sets | filter: filterSets | orderBy: '-releaseDate' | limitTo: getMaxResults() as filteredSets" ng-show="filteredCards.length">
-                    
                     <h3 ng-bind="set.name + ' (' + set.code + ')'"></h3>
                     <div class="row">
                         <label class="col-md-4">Matching cards: </label>
@@ -85,13 +84,13 @@
                             <option ng-repeat="card in set.cards | filter:term.cards | limitTo: getMaxResults() as filteredCards" ng-value="card.multiverseid" ng-bind="card.name"></option>
                         </select>
                     </div>
+                    <div class="col-md-4"><img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card[0] || filteredCards[0].multiverseid}}&type=card" ng-if="card[0] || filteredCards[0]"/></div>
                     <div class="col-md-1">
-                        <a class="btn btn-primary" href="#" role="button" ng-click="addToMd(card, set.code)">MD &raquo;</a>
-                        <a class="btn btn-danger" href="#" role="button" ng-click="removeFromMd(card)">&laquo; MD</a>
-                        <a class="btn btn-info" href="#" role="button" ng-click="addToSb(card, set.code)">SB &raquo;</a>
-                        <a class="btn btn-danger" href="#" role="button" ng-click="removeFromSb(card)">&laquo; SB</a>
+                        <a class="btn btn-primary" href="#" role="button" ng-click="addToMd(card, set.code)" ng-if="card[0]">MD &raquo;</a>
+                        <a class="btn btn-danger" href="#" role="button" ng-click="removeFromMd(card)" ng-if="card[0]">&laquo; MD</a>
+                        <a class="btn btn-info" href="#" role="button" ng-click="addToSb(card, set.code)" ng-if="card[0]">SB &raquo;</a>
+                        <a class="btn btn-danger" href="#" role="button" ng-click="removeFromSb(card)" ng-if="card[0]">&laquo; SB</a>
                     </div>
-                    <div class="col-md-3"><img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card[0]}}&type=card" ng-if="card[0]"/></div>
                 </div>
             </div>
             <div class="col-md-4">
@@ -127,7 +126,7 @@
         <div class="container">
             <p>&copy; soks.fr 2015, version 0.0.2</p>
             <p>0.0.2 - 12.03.2015 - Saving works but I need to split the main and sideboard storages.</p>
-            <p>0.0.3 - 16.03.2015 - Storage split, changed the styles.</p>
+            <p>0.0.3 - 16.03.2015 - Storage split, changed the styles. Bind the ENTER key.</p>
         </div>
     </footer>
     </div>
