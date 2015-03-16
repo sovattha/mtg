@@ -2,7 +2,6 @@ angular.module('Editor')
     .service('SetService', ['$q', '$http', 'filterFilter', function ($q, $http, filterFilter, $firebaseObject) {
         'use strict';
         var cache = cache || {};
-        var dev = true;
         
         /**
          * Return a list of set of cards corresponding to the given codes.
@@ -13,33 +12,10 @@ angular.module('Editor')
             if (cache.sets) {
                 dfr.resolve(filterSetsByCode(cache.sets, codes));
             } else {
-                if (dev) {
-                    $http.get('data/AllSets.json').success(function (data) {
-                        dfr.resolve(processResults(data, codes));
-                    });
-                } else {
-                    var myDataRef = new Firebase(FIREBASE_URL + '/sets');
-                    myDataRef.once('value', function (dataSnapshot) {
-                        var data = dataSnapshot.val();
-                        console.log('Ready', data);
-                        dfr.resolve(processResults(data, codes));
-                    });
-                }
+                $http.get('data/AllSets.json').success(function (data) {
+                    dfr.resolve(processResults(data, codes));
+                });
             }
-            return dfr.promise;
-        }
-        
-        function getMdCards() {
-            var dfr = $q.defer();
-           
-            
-            
-//            myDataRef.on('value', function (dataSnapshot) {
-//                var data = dataSnapshot.val();
-//                console.log('Main deck', data);
-//                dfr.resolve(data);
-//            });
-                
             return dfr.promise;
         }
         
@@ -78,31 +54,26 @@ angular.module('Editor')
         function addToDeck(deckList, selectedCards, setCodes) {
             getCards(selectedCards, setCodes).then(function(filteredCards) {
                 filteredCards.forEach(function(card) {
-                    var cardInDeck = _.where(deckList, {
-                        card: card
-                    });
+                    var cardInDeck = getCardInDeck(card.name, deckList);
                     if (cardInDeck.length) {
                         cardInDeck[0].quantity++;
+                        deckList.$save(cardInDeck[0]);
                     } else {
-                        deckList.push({
-                            card: card,
+                        deckList.$add({
+                            card: {
+                                multiverseid: card.multiverseid,
+                                name: card.name
+                            },
                             quantity: 1
                         });
                     }
                 });
-                var myDataRef = new Firebase(FIREBASE_URL + '/mdCards/');
-                var d = deckList.map(function (d) {
-                        return {
-                            card: {
-                                name: d.card.name,
-                                multiverseid: d.card.multiverseid
-                            },
-                            quantity: d.quantity
-                        };
-                    });
-                myDataRef.set(
-                    d
-                );
+            });
+        }
+        
+        function getCardInDeck(cardName, deckList) {
+            return _.filter(deckList, function (d) {
+                return d.card.name === cardName
             });
         }
 
@@ -112,17 +83,15 @@ angular.module('Editor')
         function removeFromDeck(deckList, selectedCards) {
             getCards(selectedCards).then(function(filteredCards) {
                 filteredCards.forEach(function(card) {
-                    var cardInDeck = _.where(deckList, {
-                        card: card
-                    });
+                    var cardInDeck = getCardInDeck(card.name, deckList);
                     if (cardInDeck.length) {
                         if (--cardInDeck[0].quantity === 0) {
-                            deckList.pop(cardInDeck[0]);
+                            deckList.$remove(cardInDeck[0]);
+                        } else {
+                            deckList.$save(cardInDeck[0]);
                         }
                     }
                 });
-                var myDataRef = new Firebase(FIREBASE_URL + '/mdCards/');
-                myDataRef.push(deckList);
             });
         }
         
@@ -134,7 +103,6 @@ angular.module('Editor')
 
         return {
             getSets: getSets,
-            getMdCards: getMdCards,
             getCards: getCards,
             addToDeck: addToDeck,
             removeFromDeck: removeFromDeck
