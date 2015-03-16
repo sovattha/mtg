@@ -52,6 +52,14 @@ angular.module('Editor')
         $scope.filterSets = function(set) {
             return $scope.standardFormat ? $scope.standardSets.indexOf(set.code) >= 0 : true;
         }
+        
+        $scope.sumMdCards = function() {
+            return $scope.mdCards.reduce(function(pv, cv) { return pv + cv.quantity; }, 0);
+        }
+        
+        $scope.sumSbCards = function() {
+            return $scope.sbCards.reduce(function(pv, cv) { return pv + cv.quantity; }, 0);
+        }
 
     }
 ]);

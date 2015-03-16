@@ -26,7 +26,7 @@ angular.module('Editor')
         }
         
         function filterSetsByCode(sets, codes) {
-            return codes ? _.filter(sets, function(set) {
+            return codes && codes[0] ? _.filter(sets, function(set) {
                 return _.indexOf(codes, set.code) >= 0;
             }) : sets;
         }

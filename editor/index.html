@@ -74,9 +74,11 @@
                 
                 <div class="row" ng-repeat="set in sets | filter: filterSets | orderBy: '-releaseDate' | limitTo: getMaxResults() as filteredSets" ng-show="filteredCards.length">
                     
-                        <h3 ng-bind="set.name + ' (' + set.code + ')'"></h3>
-                        <label class="col-md-2">Matching cards: </label>
+                    <h3 ng-bind="set.name + ' (' + set.code + ')'"></h3>
+                    <div class="row">
+                        <label class="col-md-4">Matching cards: </label>
                         <span class="col-md-1" ng-bind="filteredCards.length == maxResults ? maxResults + ' or more' : filteredCards.length"></span>
+                    </div>
                     
                     <div class="col-md-5">
                         <select multiple id="available-sets" ng-model="card" ng-dblclick="addToMd(card, set.code)" size="10">
@@ -85,37 +87,37 @@
                     </div>
                     <div class="col-md-1">
                         <a class="btn btn-primary" href="#" role="button" ng-click="addToMd(card, set.code)">MD &raquo;</a>
-                        <a class="btn btn-danger" href="#" role="button" ng-click="removeFromMd(card, set.code)">&laquo; MD</a>
+                        <a class="btn btn-danger" href="#" role="button" ng-click="removeFromMd(card)">&laquo; MD</a>
                         <a class="btn btn-info" href="#" role="button" ng-click="addToSb(card, set.code)">SB &raquo;</a>
-                        <a class="btn btn-danger" href="#" role="button" ng-click="removeFromSb(card, set.code)">&laquo; SB</a>
+                        <a class="btn btn-danger" href="#" role="button" ng-click="removeFromSb(card)">&laquo; SB</a>
                     </div>
                     <div class="col-md-3"><img src="http://gatherer.wizards.com/Handlers/Image.ashx?multiverseid={{card[0]}}&type=card" ng-if="card[0]"/></div>
                 </div>
             </div>
             <div class="col-md-4">
                 <h2>Main deck</h2>
+                <h3 ng-pluralize count="sumMdCards()" when="{'0': 'No card in the main deck', '1': '1 card in the main deck', 'other': '{} cards in the main deck'}"></h3>
                 <div ng-repeat="entry in mdCards | orderBy: 'entry.card.name'" class="row">
-                    <div class="col-md-10">
-                        <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid={{entry.card.multiverseid}}" target="mtg" ng-bind="entry.card.name"></a>
+                    <div class="col-md-8">
+                        <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid={{entry.card.multiverseid}}" target="mtg" ng-bind="entry.card.name" ng-if="entry.card.multiverseid"></a>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <input ng-model="entry.quantity" size="2" />
+                        <a class="btn btn-danger btn-xs" href="#" role="button" ng-click="removeFromMd([entry.card.multiverseid + ''])">-</a>
+                        <a class="btn btn-info btn-xs" href="#" role="button" ng-click="addToMd([entry.card.multiverseid + ''])">+</a>
                     </div>
-                </div>
-                <div ng-show="mdCards.length === 0">
-                    No card in the main deck
                 </div>
                 <h2>Sideboard</h2>
+                <h3 ng-pluralize count="sumSbCards()" when="{'0': 'No card in the sideboard', '1': '1 card in the sideboard', 'other': '{} cards in the sideboard'}"></h3>
                 <div ng-repeat="entry in sbCards | orderBy: 'entry.card.name'" class="row">
-                    <div class="col-md-10">
+                    <div class="col-md-8">
                         <a href="http://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid={{entry.card.multiverseid}}" target="mtg" ng-bind="entry.card.name"></a>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <input ng-model="entry.quantity" size="2" />
+                        <a class="btn btn-danger btn-xs" href="#" role="button" ng-click="removeFromSb([entry.card.multiverseid + ''])">-</a>
+                        <a class="btn btn-info btn-xs" href="#" role="button" ng-click="addToSb([entry.card.multiverseid + ''])">+</a>
                     </div>
-                </div>
-                <div ng-show="sbCards.length === 0">
-                    No card in the side board
                 </div>
             </div>
         </div>
@@ -125,6 +127,7 @@
         <div class="container">
             <p>&copy; soks.fr 2015, version 0.0.2</p>
             <p>0.0.2 - 12.03.2015 - Saving works but I need to split the main and sideboard storages.</p>
+            <p>0.0.3 - 16.03.2015 - Storage split, changed the styles.</p>
         </div>
     </footer>
     </div>
